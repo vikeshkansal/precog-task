@@ -74,8 +74,3 @@ pip install numpy matplotlib torch torchvision scikit-learn seaborn networkx Pil
 ## Hardware Recommendation
 
 Training can be computationally intensive. A GPU is highly recommended. The notebook automatically detects if CUDA is available (`device = "cuda"`).
-
-## Results Summary
-
-*   **Baseline**: ~3.7% accuracy on randomized test set (Color biased).
-*   **Robust (JTT)**: ~85% accuracy on randomized test set (Shape learned).
