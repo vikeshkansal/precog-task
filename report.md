@@ -21,12 +21,10 @@
     *   **Conflicting (Hard) Test Accuracy**: **3.77%**
     *   **Interpretation**: The model achieves near-perfect training accuracy but fails completely on the hard test set (worse than random guessing's 10%), indicating it has learned to rely solely on the spurious color correlation.
 *   **Confusion Matrix**:
-    *   ![Confusion Matrix of Baseline Model](/home/vikeshkansal/.gemini/antigravity/brain/6d3756d4-c7d7-4572-a501-58e86ab8da15/images/confusion_matrix_21_0.png)
     *   **Analysis**: The confusion matrix (made for the test set) reveals that the model is mainly looking at color since it's very distributed. One thing I noticed was that the digit 1 specifically normally had low confusion (i.e. it was correctly classified) a lot more than the others, but still low compared to an absolute scale. I suspect that this is because the digit 1 is just a vertical line, and so it is a lot easier for the model to identify it, compared to 3, for example, which is made up of curves. Something else to note is that the confusion matrix has very low confidence values on the diagonal (i.e. at any index (i, i)), since the test set has backgrounds of anything but the color assigned to a digit.
 
 ## 3. Task 2: Interpretability - "What is the model looking at?"
 *   **Feature Visualization (Activation Maximization)**:
-    *   ![Feature Visualization of Baseline Neurons](/home/vikeshkansal/.gemini/antigravity/brain/6d3756d4-c7d7-4572-a501-58e86ab8da15/images/feature_visualization_27_1.png)
 * I tried several things for this:
     1. The first step consisted of trying to see what a model remembers; I passed in images belonging to each class, captured the activationss of the neurons in the 3rd convolutional layer (I'll refer to this as c3) and trained a tensor such that the activations of the tensor's c3 match the captured c3. The next thing I tried was to just optimize image tensors to produce each class' ideal image, by maximizing their probabilities. To this, I tried starting off with random noise, and also tried starting off with the background texture that I made the dataset with. As an example, if I was generating the image for 1 then I'd choose the background texture for 1, and optimize from that. The main thing I noticed with this is that the model simply changed around the pixels to simply maximize what I had asked for; not necessarily in a way that would be interpretable to humans. From here I realized the importance of regularization and tried applying it, however I didn't get concrete outputs with that and left it at that.
     2. The next thing I decided to do was to show that the model is actually really simple and that its dimensionality isn't very high. The main way I decided to do this was using 3 things - Singular Learning Theory (specifically a package developed by Timaeus - `devinterp` helped me with this, and I'll mention SLT later on in the report), Principal Component Analysis (PCA), Neuron Ablation (which measures how much the accuracy drops when a neuron is essentially not considered), and a (Normalized) Mutual Information graph. The neuron ablation was done on the output of the GAP layer in my model (there are 16 neurons). This was chosen since it's the layer right before the final classification layer, and o I believe that it is the most likely to be a measure of human-measurable features; and hence the most important one to look into. Similarly the NMI graph was also made using these same 16 neurons. The output I got for this was like so:
@@ -46,7 +44,6 @@
     *   **Description**: We artificially overwrote the activation of specific 'Color Neurons' with a high value during inference.
     *   **Result**: This flipped the model's prediction to the class associated with that neuron's preferred color, proving the causal importance of these spurious neurons.
 *   **Ablation Study**:
-    *   [INSERT: Result of zeroing out 'Color' neurons.]
     *   **Conclusion**: Removing the color-sensitive neurons improved Hard Test accuracy significantly, essentially forcing the model to rely on the remaining (weaker) shape signals that were previously drowned out.
 
 ## 5. Task 4: Mitigation Strategies
@@ -60,7 +57,6 @@
 
 ## 6. Task 5: Robustness Analysis (Adversarial Attacks)
 *   **PGD Attack**:
-    *   ![PGD Adversarial Attack Example](/home/vikeshkansal/.gemini/antigravity/brain/6d3756d4-c7d7-4572-a501-58e86ab8da15/images/pgd_attack_92_1.png)
     *   **Analysis**: The robust models (JTT and Clustering-based) were significantly harder to fool than the baseline. They required larger epsilon perturbations to flip the label. This suggests that "shape" features are inherently more robust to adversarial noise than the low-level, pixel-perfect color correlations learned by the baseline.
 
 ## 7. Extra Learnings: Complexity & Singular Learning Theory (SLT)
@@ -75,7 +71,6 @@
 *   **Interpretation**:
     *   The baseline model found a 'simple' solution (color mapping), resulting in a lower complexity score (~1.25). The robust model was forced to learn 'shape', a more complex feature, resulting in a significantly higher LLC (~2.50). This quantitatively validates that the "robust" solution is distinct and simpler solutions (like color bias) are preferred by SGD unless intervention occurs.
     *   **Robust Model Ablation**:
-        ![Robust Model Ablation](/home/vikeshkansal/.gemini/antigravity/brain/6d3756d4-c7d7-4572-a501-58e86ab8da15/images/ablation_97_1.png)
 
 ## 8. Conclusion
 *   **Summary**: We successfully demonstrated that standard training on biased data leads to spurious correlation learning (3.77% accuracy). Interpretability tools (Grad-CAM, Feature Viz) confirmed the model was a "color detector". Mitigation strategies like JTT and Unsupervised Clustering recovered robust accuracy (up to 85.7%).
