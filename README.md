@@ -59,12 +59,8 @@ pip install numpy matplotlib torch torchvision scikit-learn seaborn networkx Pil
 
 ## How to Run
 
-1.  **Launch Jupyter Notebook**:
-    ```bash
-    jupyter notebook
-    ```
-2.  **Open `main.ipynb`**: Navigate to the file in the Jupyter interface.
-3.  **Run All Cells**: You can run the cells sequentially.
+1.  **Open `main.ipynb`**: Navigate to the file in the Jupyter interface.
+2.  **Run All Cells**: You can run the cells sequentially.
     *   **Task 0**: Data generation (this takes a few minutes initially to create the colored variants).
     *   **Task 1**: Baseline training.
     *   **Task 2 & 3**: Visualization and Interpretability (these steps load the trained baseline model).
@@ -74,3 +70,8 @@ pip install numpy matplotlib torch torchvision scikit-learn seaborn networkx Pil
 ## Hardware Recommendation
 
 Training can be computationally intensive. A GPU is highly recommended. The notebook automatically detects if CUDA is available (`device = "cuda"`).
+
+## Results Summary
+
+*   **Baseline**: ~3.7% accuracy on randomized test set (Color biased).
+*   **Robust (JTT)**: ~87% accuracy on randomized test set (Shape learned).
